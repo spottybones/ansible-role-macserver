@@ -1,12 +1,5 @@
 ---
 - include_tasks: datetime.yml
 - include_tasks: sleep.yml
-
-- name: Enable restart on power failure
-  shell: systemsetup -setrestartpowerfailure on
-
-- name: Enable restart on system freeze
-  shell: systemsetup -setrestartfreeze on
-
-- name: Enable remote login
-  shell: systemsetup -setremotelogin on
+- include_tasks: restart.yml
+- include_tasks: remotelogin.yml

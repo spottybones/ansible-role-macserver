@@ -1,18 +1,36 @@
 ---
-- name: Get computersleep setting
+- name: Get computer sleep setting
   command: "systemsetup -getcomputersleep"
   register: result
   changed_when: False
 
-- name: Disable computer sleep
+- name: Disable computer sleep if enabled
   command: "systemsetup -setcomputersleep 0"
   when: "'Never' not in result.stdout"
 
-- name: Disable hard disk sleep
-  shell: systemsetup -setharddisksleep 0
+- name: Get hard disk sleep setting
+  command: "systemsetup -getharddisksleep"
+  register: result
+  changed_when: False
 
-- name: Enable Wake On Network Access
-  shell: systemsetup -setwakeonnetworkaccess on
+- name: Disable hard disk sleep if enabled
+  command: "systemsetup -setharddisksleep 0"
+  when: "'Never' not in result.stdout"
 
-- name: Disable ability of power button to sleep computer
-  shell: systemsetup -setallowpowerbuttontosleepcomputer off
+- name: Get wake on network access setting
+  command: "systemsetup -getwakeonnetworkaccess"
+  register: result
+  changed_when: False
+
+- name: Enable wake on network access if disabled
+  command: "systemsetup -setwakeonnetworkaccess on"
+  when: "': On' not in result.stdout"
+
+- name: Get ability of power button to sleep computer setting
+  command: "systemsetup -getallowpowerbuttontosleepcomputer"
+  register: result
+  changed_when: False
+
+- name: Disable ability of power button to sleep computer if enabled
+  command: "systemsetup -setallowpowerbuttontosleepcomputer off"
+  when: "': Off' not in result.stdout"
