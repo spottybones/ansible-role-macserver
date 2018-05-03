@@ -1,5 +1,91 @@
 ---
-- include_tasks: datetime.yml
-- include_tasks: sleep.yml
-- include_tasks: restart.yml
-- include_tasks: remotelogin.yml
+# set timezone
+- name: Get current timezone setting
+  command: "systemsetup -gettimezone"
+  register: result
+  changed_when: False
+  when: macserver_timezone is defined
+
+- name: Set the timezone if different than specified
+  command: "systemsetup -settimezone '{{macserver_timezone}}'"
+  when: macserver_timezone is defined and macserver_timezone not in result.stdout
+
+# use network time
+- name: Get current value of usingnetworktime
+  command: "systemsetup -getusingnetworktime"
+  register: result
+  changed_when: False
+
+- name: Enable usingnetworktime if disabled
+  command: "systemsetup -setusingnetworktime on"
+  when: "': On' not in result.stdout"
+
+# disable computer sleep
+- name: Get computer sleep setting
+  command: "systemsetup -getcomputersleep"
+  register: result
+  changed_when: False
+
+- name: Disable computer sleep if enabled
+  command: "systemsetup -setcomputersleep 0"
+  when: "'Never' not in result.stdout"
+
+# disable hard disk sleep
+- name: Get hard disk sleep setting
+  command: "systemsetup -getharddisksleep"
+  register: result
+  changed_when: False
+
+- name: Disable hard disk sleep if enabled
+  command: "systemsetup -setharddisksleep 0"
+  when: "'Never' not in result.stdout"
+
+# enable wake on network access
+- name: Get wake on network access setting
+  command: "systemsetup -getwakeonnetworkaccess"
+  register: result
+  changed_when: False
+
+- name: Enable wake on network access if disabled
+  command: "systemsetup -setwakeonnetworkaccess on"
+  when: "': On' not in result.stdout"
+
+# disable ability of power button to put computer to sleep
+- name: Get ability of power button to sleep computer setting
+  command: "systemsetup -getallowpowerbuttontosleepcomputer"
+  register: result
+  changed_when: False
+
+- name: Disable ability of power button to sleep computer if enabled
+  command: "systemsetup -setallowpowerbuttontosleepcomputer off"
+  when: "': Off' not in result.stdout"
+
+# enable restart on power failure
+- name: Get current value of restart on power failure
+  command: "systemsetup -getrestartpowerfailure"
+  register: result
+  changed_when: False
+
+- name: Enable restart on power failure if disabled
+  command: "systemsetup -setrestartpowerfailure on"
+  when: "': On' not in result.stdout"
+
+# enable restart on system freeze
+- name: Get current value of restart on system freeze
+  command: "systemsetup -getrestartfreeze"
+  register: result
+  changed_when: False
+
+- name: Enable restart on system freeze if disabled
+  command: "systemsetup -setrestartfreeze on"
+  when: "': On' not in result.stdout"
+
+# enable remote login
+- name: Get current value of remotelogin
+  command: "systemsetup -getremotelogin"
+  register: result
+  changed_when: False
+
+- name: Enable remotelogin if currently disabled
+  command: "systemsetup -setremotelogin on"
+  when: "': On' not in result.stdout"

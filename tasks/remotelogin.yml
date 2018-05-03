@@ -1,9 +1,0 @@
----
-- name: Get current value of remotelogin
-  command: "systemsetup -getremotelogin"
-  register: result
-  changed_when: False
-
-- name: Enable remotelogin if currently disabled
-  command: "systemsetup -setremotelogin on"
-  when: "': On' not in result.stdout"
