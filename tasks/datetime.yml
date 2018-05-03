@@ -1,0 +1,15 @@
+---
+- name: Get the timezone
+  command: "systemsetup -gettimezone"
+  register: result
+  changed_when: False
+  when: macserver_timezone is defined
+
+- name: Set the timezone
+  command: "systemsetup -settimezone '{{macserver_timezone}}'"
+  when: macserver_timezone is defined and macserver_timezone not in result.stdout
+
+- name: Set the date and time automatically
+  command: "systemsetup -setusingnetworktime on"
+  register: result
+  changed_when: "'already' not in result.stdout"

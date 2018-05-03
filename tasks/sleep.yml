@@ -1,0 +1,18 @@
+---
+- name: Get computersleep setting
+  command: "systemsetup -getcomputersleep"
+  register: result
+  changed_when: False
+
+- name: Disable computer sleep
+  command: "systemsetup -setcomputersleep 0"
+  when: "'Never' not in result.stdout"
+
+- name: Disable hard disk sleep
+  shell: systemsetup -setharddisksleep 0
+
+- name: Enable Wake On Network Access
+  shell: systemsetup -setwakeonnetworkaccess on
+
+- name: Disable ability of power button to sleep computer
+  shell: systemsetup -setallowpowerbuttontosleepcomputer off
