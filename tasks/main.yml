@@ -89,3 +89,23 @@
 - name: Enable remotelogin if currently disabled
   command: "systemsetup -setremotelogin on"
   when: "': On' not in result.stdout"
+
+# set ComputerName
+- name: Get computer name
+  command: "scutil --get ComputerName"
+  register: result
+  changed_when: False
+
+- name: Set computer name
+  command: "scutil --set ComputerName {{ ansible_host.split('.')[0] }}"
+  when: "result.stdout != ansible_host.split('.')[0]"
+
+# set LocalHostName
+- name: Get local (Bonjour/mDNS) host name
+  command: "scutil --get LocalHostName"
+  register: result
+  changed_when: False
+
+- name: Set local (Bonjour/mDNS) host name
+  command: "scutil --set LocalHostName {{ ansible_host.split('.')[0] }}"
+  when: "result.stdout != ansible_host.split('.')[0]"
