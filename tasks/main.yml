@@ -109,3 +109,13 @@
 - name: Set local (Bonjour/mDNS) host name
   command: "scutil --set LocalHostName {{ ansible_host.split('.')[0] }}"
   when: "result.stdout != ansible_host.split('.')[0]"
+
+# set HostName
+- name: Get Assigned Fully Qualified Domain Name
+  command: "scutil --get HostName"
+  register: result
+  changed_when: False
+
+- name: Set Assigned Fully Qualified Domain Name
+  command: "scutil --set HostName {{ ansible_host }}"
+  when: "result.stdout != ansible_host"
